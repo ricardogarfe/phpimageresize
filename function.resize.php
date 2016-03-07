@@ -1,29 +1,5 @@
 <?php
-/**
- * function by Wes Edling .. http://joedesigns.com
- * feel free to use this in any project, i just ask for a credit in the source code.
- * a link back to my site would be nice too.
- *
- *
- * Changes:
- * 2012/01/30 - David Goodwin - call escapeshellarg on parameters going into the shell
- * 2012/07/12 - Whizzkid - Added support for encoded image urls and images on ssl secured servers [https://]
- */
 
-/**
- * SECURITY:
- * It's a bad idea to allow user supplied data to become the path for the image you wish to retrieve, as this allows them
- * to download nearly anything to your server. If you must do this, it's strongly advised that you put a .htaccess file
- * in the cache directory containing something like the following :
- * <code>php_flag engine off</code>
- * to at least stop arbitrary code execution. You can deal with any copyright infringement issues yourself :)
- */
-
-/**
- * @param string $imagePath - either a local absolute/relative path, or a remote URL (e.g. http://...flickr.com/.../ ). See SECURITY note above.
- * @param array $opts (w(pixels), h(pixels), crop(boolean), scale(boolean), thumbnail(boolean), maxOnly(boolean), canvas-color(#abcabc), output-filename(string), cache_http_minutes(int))
- * @return new URL for resized image.
- */
 function resize($imagePath, $opts = null)
 {
     $imagePath = urldecode($imagePath);
