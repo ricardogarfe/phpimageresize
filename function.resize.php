@@ -1,11 +1,11 @@
 <?php
 
-function resize($imagePath, $opts = null)
-{
+function resize($imagePath, $opts = null) {
     $imagePath = urldecode($imagePath);
+
     # start configuration
-    $cacheFolder = './cache/'; # path to your cache folder, must be writeable by web server
-    $remoteFolder = $cacheFolder . 'remote/'; # path to the folder you wish to download remote images into
+    $cacheFolder = './cache/';
+    $remoteFolder = $cacheFolder . 'remote/';
 
     $defaults = array('crop' => false, 'scale' => 'false', 'thumbnail' => false, 'maxOnly' => false,
         'canvas-color' => 'transparent', 'output-filename' => false,
