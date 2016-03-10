@@ -8,6 +8,10 @@ class Options {
 
     public function __construct($opts=array()) {
 
+        if ($opts == null) {
+            $opts = array();
+        }
+
         $defaults = array('crop' => false,
             'scale' => 'false',
             'thumbnail' => false,
