@@ -5,6 +5,7 @@ class Options {
     const REMOTE_FOLDER = './cache/remote/';
 
     const CACHE_KEY = 'cacheFolder';
+    const REMOTE_KEY = 'remoteFolder';
 
     private $opts;
 
@@ -19,7 +20,7 @@ class Options {
             'canvas-color' => 'transparent',
             'output-filename' => false,
             self::CACHE_KEY => self::CACHE_FOLDER,
-            'remoteFolder' => self::REMOTE_FOLDER,
+            self::REMOTE_KEY => self::REMOTE_FOLDER,
             'quality' => 90,
             'cache_http_minutes' => 20);
 
@@ -33,6 +34,11 @@ class Options {
     public function obtainCache() {
         return $this->opts[self::CACHE_KEY];
     }
+
+    public function obtainRemote() {
+        return $this->opts[self::REMOTE_KEY];
+    }
+
 
     private function sanitize($opts) {
         $result = array();
