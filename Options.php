@@ -24,9 +24,12 @@ class Options {
         $this->opts = array_merge($defaults, $sanitized);
     }
 
-    public function asHash()
-    {
+    public function asHash(){
         return $this->opts;
+    }
+
+    public function obtainCache() {
+        return $this->opts['cacheFolder'];
     }
 
     private function sanitize($opts) {

@@ -6,7 +6,7 @@ function resize($imagePath, $opts = null) {
     $options = new Options($opts);
     $opts = $options->asHash();
 
-    $cacheFolder = $opts['cacheFolder'];
+    $cacheFolder = $options->obtainCache();
     $remoteFolder = $opts['remoteFolder'];
 
     $path_to_convert = 'convert'; # this could be something like /usr/bin/convert or /opt/local/share/bin/convert
