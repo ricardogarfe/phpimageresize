@@ -40,11 +40,8 @@ class Options {
     }
 
     private function sanitize($opts) {
-        $result = array();
+        if ($opts == null) return array();
 
-        if ($opts != null) {
-            $result = $opts;
-        }
-        return $result;
+        return $opts;
     }
 }
