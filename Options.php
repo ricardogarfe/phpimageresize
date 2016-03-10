@@ -4,6 +4,8 @@ class Options {
     const CACHE_FOLDER = './cache/';
     const REMOTE_FOLDER = './cache/remote/';
 
+    const CACHE_KEY = 'cacheFolder';
+
     private $opts;
 
     public function __construct($opts=array()) {
@@ -16,7 +18,7 @@ class Options {
             'maxOnly' => false,
             'canvas-color' => 'transparent',
             'output-filename' => false,
-            'cacheFolder' => self::CACHE_FOLDER,
+            self::CACHE_KEY => self::CACHE_FOLDER,
             'remoteFolder' => self::REMOTE_FOLDER,
             'quality' => 90,
             'cache_http_minutes' => 20);
@@ -29,7 +31,7 @@ class Options {
     }
 
     public function obtainCache() {
-        return $this->opts['cacheFolder'];
+        return $this->opts[self::CACHE_KEY];
     }
 
     private function sanitize($opts) {
