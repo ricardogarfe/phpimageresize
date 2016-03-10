@@ -39,7 +39,6 @@ class Options {
         return $this->opts[self::REMOTE_KEY];
     }
 
-
     private function sanitize($opts) {
         $result = array();
 
