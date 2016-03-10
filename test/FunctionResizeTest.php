@@ -26,8 +26,18 @@ class FunctionResizeTest extends PHPUnit_Framework_TestCase {
         $asHash = $options->asHash();
         $nullOptions = new Options(null);
 
+        $configuration = array(
+            'thumbnail' => true,
+            'maxOnly' => true
+        );
+
+        $notNullOptions = new Options($configuration);
+        $configured = $notNullOptions->asHash();
+
         $this->assertEquals($defaults, $asHash);
         $this->assertEquals($defaults, $nullOptions->asHash());
+        $this->assertTrue($configured['thumbnail']);
+        $this->assertTrue($configured['maxOnly']);
     }
 }
 
