@@ -8,9 +8,7 @@ class Options {
 
     public function __construct($opts=array()) {
 
-        if ($opts == null) {
-            $opts = array();
-        }
+        $sanitized = $this->sanitize($opts);
 
         $defaults = array('crop' => false,
             'scale' => 'false',
@@ -23,11 +21,20 @@ class Options {
             'quality' => 90,
             'cache_http_minutes' => 20);
 
-        $this->opts = array_merge($defaults, $opts);
+        $this->opts = array_merge($defaults, $sanitized);
     }
 
     public function asHash()
     {
         return $this->opts;
+    }
+
+    private function sanitize($opts) {
+        $result = array();
+
+        if ($opts != null) {
+            $result = $opts;
+        }
+        return $result;
     }
 }
