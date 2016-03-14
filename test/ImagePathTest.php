@@ -24,5 +24,11 @@ class ImagePathTest extends PHPUnit_Framework_TestCase {
         $imagePathFtp = new ImagePath($ftp);
 
         $this->assertFalse($imagePathFtp->isHttpProtocol());
+
+        $nullUrl = null;
+
+        $imagePathFtp = new ImagePath($nullUrl);
+
+        $this->assertFalse($imagePathFtp->isHttpProtocol());
     }
 }

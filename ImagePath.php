@@ -5,7 +5,7 @@ class ImagePath {
     private $path;
     const VALID_HTTP_PROTOCOLS = ['http', 'https'];
 
-    public function __construct($url) {
+    public function __construct($url='') {
         $this->path = $this->sanitize($url);
     }
 
@@ -22,6 +22,7 @@ class ImagePath {
     }
 
     private function obtainScheme() {
+        if ($this->path == '') return '';
         $purl = parse_url($this->path);
         return $purl['scheme'];
     }
