@@ -10,12 +10,6 @@ function resize($imagePath, $opts = null) {
     $configuration = new Configuration($opts);
     $opts = $configuration->asHash();
 
-    $cacheFolder = $configuration->obtainCache();
-    $remoteFolder = $configuration->obtainRemote();
-    $path_to_convert = $configuration->obtainConvertPath();
-
-    ## you shouldn't need to configure anything else beyond this point
-
     $purl = parse_url($imagePath);
     $finfo = pathinfo($imagePath);
     $ext = $finfo['extension'];
@@ -24,7 +18,7 @@ function resize($imagePath, $opts = null) {
     if (isset($purl['scheme']) && ($purl['scheme'] == 'http' || $purl['scheme'] == 'https')):
         # grab the image, and cache it so we have something to work with..
         list($filename) = explode('?', $finfo['basename']);
-        $local_filepath = $remoteFolder . $filename;
+        $local_filepath = $configuration->obtainRemote() . $filename;
         $download_image = true;
         if (file_exists($local_filepath)):
             if (filemtime($local_filepath) < strtotime('+' . $opts['cache_http_minutes'] . ' minutes')):
@@ -55,11 +49,11 @@ function resize($imagePath, $opts = null) {
         $newPath = $opts['output-filename'];
     else:
         if (!empty($w) and !empty($h)):
-            $newPath = $cacheFolder . $filename . '_w' . $w . '_h' . $h . (isset($opts['crop']) && $opts['crop'] == true ? "_cp" : "") . (isset($opts['scale']) && $opts['scale'] == true ? "_sc" : "") . '.' . $ext;
+            $newPath = $configuration->obtainCache() . $filename . '_w' . $w . '_h' . $h . (isset($opts['crop']) && $opts['crop'] == true ? "_cp" : "") . (isset($opts['scale']) && $opts['scale'] == true ? "_sc" : "") . '.' . $ext;
         elseif (!empty($w)):
-            $newPath = $cacheFolder . $filename . '_w' . $w . '.' . $ext;
+            $newPath = $configuration->obtainCache() . $filename . '_w' . $w . '.' . $ext;
         elseif (!empty($h)):
-            $newPath = $cacheFolder . $filename . '_h' . $h . '.' . $ext;
+            $newPath = $configuration->obtainCache() . $filename . '_h' . $h . '.' . $ext;
         else:
             return false;
         endif;
@@ -95,17 +89,17 @@ function resize($imagePath, $opts = null) {
             endif;
 
             if (true === $opts['scale']):
-                $cmd = $path_to_convert . " " . escapeshellarg($imagePath) . " -resize " . escapeshellarg($resize) .
+                $cmd = $configuration->obtainConvertPath() . " " . escapeshellarg($imagePath) . " -resize " . escapeshellarg($resize) .
                     " -quality " . escapeshellarg($opts['quality']) . " " . escapeshellarg($newPath);
             else:
-                $cmd = $path_to_convert . " " . escapeshellarg($imagePath) . " -resize " . escapeshellarg($resize) .
+                $cmd = $configuration->obtainConvertPath() . " " . escapeshellarg($imagePath) . " -resize " . escapeshellarg($resize) .
                     " -size " . escapeshellarg($w . "x" . $h) .
                     " xc:" . escapeshellarg($opts['canvas-color']) .
                     " +swap -gravity center -composite -quality " . escapeshellarg($opts['quality']) . " " . escapeshellarg($newPath);
             endif;
 
         else:
-            $cmd = $path_to_convert . " " . escapeshellarg($imagePath) .
+            $cmd = $configuration->obtainConvertPath() . " " . escapeshellarg($imagePath) .
                 " -thumbnail " . (!empty($h) ? 'x' : '') . $w . "" .
                 (isset($opts['maxOnly']) && $opts['maxOnly'] == true ? "\>" : "") .
                 " -quality " . escapeshellarg($opts['quality']) . " " . escapeshellarg($newPath);
