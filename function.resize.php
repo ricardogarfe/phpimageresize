@@ -13,7 +13,6 @@ function resize($imagePath, $opts = null) {
     $imagePath = $path->sanitizedPath();
 
     $finfo = pathinfo($imagePath);
-    $ext = $finfo['extension'];
 
     if ($path->isHttpProtocol()):
         $filename = $path->obtainFileName();
@@ -44,6 +43,7 @@ function resize($imagePath, $opts = null) {
     $filename = md5_file($imagePath);
 
     // If the user has requested an explicit output-filename, do not use the cache directory.
+    $ext = $finfo['extension'];
     if (false !== $opts['output-filename']) :
         $newPath = $opts['output-filename'];
     else:
