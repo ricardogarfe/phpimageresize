@@ -8,6 +8,7 @@ function resize($imagePath, $opts = null) {
     $imagePath = sanitize($imagePath);
 
     $configuration = new Configuration($opts);
+
     $opts = $configuration->asHash();
 
     $purl = parse_url($imagePath);
