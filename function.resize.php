@@ -1,11 +1,8 @@
 <?php
 
-function sanitize($path) {
-    return urldecode($path);
-}
-
 function resize($imagePath, $opts = null) {
-    $imagePath = sanitize($imagePath);
+    $path = new ImagePath($imagePath);
+    $imagePath = $path->sanitizedPath();
 
     $configuration = new Configuration($opts);
 
