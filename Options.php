@@ -1,8 +1,8 @@
 <?php
 
 class Options {
-    const CACHE_FOLDER = './cache/';
-    const REMOTE_FOLDER = './cache/remote/';
+    const CACHE_PATH = './cache/';
+    const REMOTE_PATH = './cache/remote/';
 
     const CACHE_KEY = 'cacheFolder';
     const REMOTE_KEY = 'remoteFolder';
@@ -21,8 +21,8 @@ class Options {
             'maxOnly' => false,
             'canvas-color' => 'transparent',
             'output-filename' => false,
-            self::CACHE_KEY => self::CACHE_FOLDER,
-            self::REMOTE_KEY => self::REMOTE_FOLDER,
+            self::CACHE_KEY => self::CACHE_PATH,
+            self::REMOTE_KEY => self::REMOTE_PATH,
             'quality' => 90,
             'cache_http_minutes' => 20);
 
