@@ -11,9 +11,7 @@ function resize($imagePath, $opts = null) {
     $finfo = pathinfo($imagePath);
     $ext = $finfo['extension'];
 
-    $isHttpProtocol = $path->obtainScheme() == 'http' || $path->obtainScheme() == 'https';
-
-    if ($isHttpProtocol):
+    if ($path->isHttpProtocol()):
         # grab the image, and cache it so we have something to work with..
         list($filename) = explode('?', $finfo['basename']);
         $local_filepath = $configuration->obtainRemote() . $filename;
