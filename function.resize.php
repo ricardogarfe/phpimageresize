@@ -7,12 +7,12 @@ function sanitize($path) {
 function resize($imagePath, $opts = null) {
     $imagePath = sanitize($imagePath);
 
-    $options = new Options($opts);
-    $opts = $options->asHash();
+    $configuration = new Configuration($opts);
+    $opts = $configuration->asHash();
 
-    $cacheFolder = $options->obtainCache();
-    $remoteFolder = $options->obtainRemote();
-    $path_to_convert = $options->obtainConvertPath();
+    $cacheFolder = $configuration->obtainCache();
+    $remoteFolder = $configuration->obtainRemote();
+    $path_to_convert = $configuration->obtainConvertPath();
 
     ## you shouldn't need to configure anything else beyond this point
 

@@ -1,6 +1,6 @@
 <?php
 
-include '../Options.php';
+include '../Configuration.php';
 
 class FunctionResizeTest extends PHPUnit_Framework_TestCase {
 
@@ -17,31 +17,31 @@ class FunctionResizeTest extends PHPUnit_Framework_TestCase {
         'cache_http_minutes' => 20
     );
 
-    public function testOpts() {
-        $this->assertInstanceOf('Options', new Options);
+    public function testConfiguration() {
+        $this->assertInstanceOf('Configuration', new Configuration);
     }
 
     public function testNullOptsDefaults() {
-        $options = new Options(null);
+        $configuration = new Configuration(null);
 
-        $this->assertEquals($this->defaults, $options->asHash());
+        $this->assertEquals($this->defaults, $configuration->asHash());
     }
 
     public function testDefaults() {
-        $options = new Options();
-        $asHash = $options->asHash();
+        $configuration = new Configuration();
+        $asHash = $configuration->asHash();
 
         $this->assertEquals($this->defaults, $asHash);
     }
 
     public function testDefaultsNotOverwriteConfiguration() {
 
-        $configuration = array(
+        $opts = array(
             'thumbnail' => true,
             'maxOnly' => true
         );
 
-        $options = new Options($configuration);
+        $options = new Configuration($opts);
         $configured = $options->asHash();
 
         $this->assertTrue($configured['thumbnail']);
@@ -49,21 +49,21 @@ class FunctionResizeTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testObtainCache() {
-        $options = new Options();
+        $configuration = new Configuration();
 
-        $this->assertEquals('./cache/', $options->obtainCache());
+        $this->assertEquals('./cache/', $configuration->obtainCache());
     }
 
     public function testObtainRemote() {
-        $options = new Options();
+        $configuration = new Configuration();
 
-        $this->assertEquals('./cache/remote/', $options->obtainRemote());
+        $this->assertEquals('./cache/remote/', $configuration->obtainRemote());
     }
 
     public function testObtainConvertPath() {
-        $options = new Options();
+        $configuration = new Configuration();
 
-        $this->assertEquals('convert', $options->obtainConvertPath());
+        $this->assertEquals('convert', $configuration->obtainConvertPath());
     }
 }
 

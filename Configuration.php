@@ -1,6 +1,6 @@
 <?php
 
-class Options {
+class Configuration {
     const CACHE_PATH = './cache/';
     const REMOTE_PATH = './cache/remote/';
 
