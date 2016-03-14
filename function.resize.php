@@ -1,7 +1,11 @@
 <?php
 
+function sanitize($path) {
+    return urldecode($path);
+}
+
 function resize($imagePath, $opts = null) {
-    $imagePath = urldecode($imagePath);
+    $imagePath = sanitize($imagePath);
 
     $options = new Options($opts);
     $opts = $options->asHash();
@@ -9,7 +13,7 @@ function resize($imagePath, $opts = null) {
     $cacheFolder = $options->obtainCache();
     $remoteFolder = $options->obtainRemote();
 
-    $path_to_convert = 'convert'; # this could be something like /usr/bin/convert or /opt/local/share/bin/convert
+    $path_to_convert = 'convert';
 
     ## you shouldn't need to configure anything else beyond this point
 
