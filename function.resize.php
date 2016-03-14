@@ -8,12 +8,11 @@ function resize($imagePath, $opts = null) {
 
     $opts = $configuration->asHash();
 
-    $purl = parse_url($imagePath);
     $finfo = pathinfo($imagePath);
     $ext = $finfo['extension'];
 
     # check for remote image..
-    if (isset($purl['scheme']) && ($purl['scheme'] == 'http' || $purl['scheme'] == 'https')):
+    if ($path->obtainScheme() == 'http' || $path->obtainScheme() == 'https'):
         # grab the image, and cache it so we have something to work with..
         list($filename) = explode('?', $finfo['basename']);
         $local_filepath = $configuration->obtainRemote() . $filename;
