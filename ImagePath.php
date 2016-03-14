@@ -12,17 +12,17 @@ class ImagePath {
         return $this->path;
     }
 
-    public function obtainScheme() {
-        $purl = parse_url($this->path);
-        return $purl['scheme'];
-    }
-
     public function isHttpProtocol() {
         return $this->obtainScheme() == 'http' || $this->obtainScheme() == 'https';;
     }
 
     private function sanitize($path) {
         return urldecode($path);
+    }
+
+    private function obtainScheme() {
+        $purl = parse_url($this->path);
+        return $purl['scheme'];
     }
 
 }
