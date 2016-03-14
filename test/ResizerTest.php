@@ -20,9 +20,6 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
         $resizer = new Resizer(new ImagePath(''), 'nonConfigurationObject');
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function testInstantiation() {
         $this->assertInstanceOf('Resizer', new Resizer(new ImagePath(''), new Configuration()));
         $this->assertInstanceOf('Resizer', new Resizer(new ImagePath('')));
