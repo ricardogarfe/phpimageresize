@@ -31,4 +31,14 @@ class ImagePathTest extends PHPUnit_Framework_TestCase {
 
         $this->assertFalse($imagePathFtp->isHttpProtocol());
     }
+
+    public function testObtainFileName() {
+        $url = 'http://memesvault.com/wp-content/uploads/Disappointed-Meme-Face-08.png?q=alt';
+        $expected = 'Disappointed-Meme-Face-08.png';
+
+        $imagePath = new ImagePath($url);
+
+        $this->assertEquals($expected, $imagePath->obtainFileName());
+
+    }
 }

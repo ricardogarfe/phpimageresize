@@ -17,6 +17,12 @@ class ImagePath {
         return in_array($this->obtainScheme(), self::VALID_HTTP_PROTOCOLS);
     }
 
+    public function obtainFileName() {
+        $finfo = pathinfo($this->path);
+        list($filename) = explode('?', $finfo['basename']);
+        return $filename;
+    }
+
     private function sanitize($path) {
         return urldecode($path);
     }
