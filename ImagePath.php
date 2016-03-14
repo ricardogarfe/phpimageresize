@@ -12,6 +12,11 @@ class ImagePath {
         return $this->path;
     }
 
+    public function obtainScheme() {
+        $purl = parse_url($this->path);
+        return $purl['scheme'];
+    }
+
     private function sanitize($path) {
         return urldecode($path);
     }

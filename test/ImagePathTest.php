@@ -12,4 +12,12 @@ class ImagePathTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($expected, $imagePath->sanitizedPath());
     }
 
+    public function testScheme() {
+        $url = 'https://www.google.es';
+
+        $imagePath = new ImagePath($url);
+
+        $this->assertEquals('https', $imagePath->obtainScheme());
+    }
+
 }
