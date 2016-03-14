@@ -7,6 +7,8 @@ class Options {
     const CACHE_KEY = 'cacheFolder';
     const REMOTE_KEY = 'remoteFolder';
 
+    const CONVERT_PATH = 'convert';
+
     private $opts;
 
     public function __construct($opts=array()) {
@@ -37,6 +39,10 @@ class Options {
 
     public function obtainRemote() {
         return $this->opts[self::REMOTE_KEY];
+    }
+
+    public function obtainConvertPath() {
+        return self::CONVERT_PATH;
     }
 
     private function sanitize($opts) {
