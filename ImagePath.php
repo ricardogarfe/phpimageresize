@@ -3,6 +3,7 @@
 class ImagePath {
 
     private $path;
+    const VALID_HTTP_PROTOCOLS = ['http', 'https'];
 
     public function __construct($url) {
         $this->path = $this->sanitize($url);
@@ -13,7 +14,7 @@ class ImagePath {
     }
 
     public function isHttpProtocol() {
-        return $this->obtainScheme() == 'http' || $this->obtainScheme() == 'https';;
+        return in_array($this->obtainScheme(), self::VALID_HTTP_PROTOCOLS);
     }
 
     private function sanitize($path) {
