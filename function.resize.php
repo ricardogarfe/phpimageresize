@@ -23,14 +23,17 @@ function resize($imagePath, $opts = null) {
 
     $filename = md5_file($imagePath);
 
-    // If the user has requested an explicit output-filename, do not use the cache directory.
     $finfo = pathinfo($imagePath);
     $ext = $finfo['extension'];
+
+    $cropSignal = isset($opts['crop']) && $opts['crop'] == true ? "_cp" : "";
+    $scaleSignal = isset($opts['scale']) && $opts['scale'] == true ? "_sc" : "";
+
     if (false !== $opts['output-filename']) :
         $newPath = $opts['output-filename'];
     else:
         if (!empty($width) and !empty($height)):
-            $newPath = $configuration->obtainCache() . $filename . '_w' . $width . '_h' . $height . (isset($opts['crop']) && $opts['crop'] == true ? "_cp" : "") . (isset($opts['scale']) && $opts['scale'] == true ? "_sc" : "") . '.' . $ext;
+            $newPath = $configuration->obtainCache() . $filename . '_w' . $width . '_h' . $height . $cropSignal . $scaleSignal . '.' . $ext;
         elseif (!empty($width)):
             $newPath = $configuration->obtainCache() . $filename . '_w' . $width . '.' . $ext;
         elseif (!empty($height)):
