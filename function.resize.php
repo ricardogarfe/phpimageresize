@@ -29,19 +29,19 @@ function resize($imagePath, $opts = null) {
     $cropSignal = isset($opts['crop']) && $opts['crop'] == true ? "_cp" : "";
     $scaleSignal = isset($opts['scale']) && $opts['scale'] == true ? "_sc" : "";
 
-    if (false !== $opts['output-filename']) :
+    $widthSignal = !empty($width) ? '_w'.$width : "" ;
+    $heightSignal = !empty($height) ? '_w'.$height : "" ;
+    $extension = '.'.$ext;
+
+    $newPath = $configuration->obtainCache().$filename.$widthSignal.$heightSignal.$cropSignal.$scaleSignal.$extension;
+
+    if ($opts['output-filename']) {
         $newPath = $opts['output-filename'];
-    else:
-        if (!empty($width) and !empty($height)):
-            $newPath = $configuration->obtainCache() . $filename . '_w' . $width . '_h' . $height . $cropSignal . $scaleSignal . '.' . $ext;
-        elseif (!empty($width)):
-            $newPath = $configuration->obtainCache() . $filename . '_w' . $width . '.' . $ext;
-        elseif (!empty($height)):
-            $newPath = $configuration->obtainCache() . $filename . '_h' . $height . '.' . $ext;
-        else:
-            return false;
-        endif;
-    endif;
+    }
+
+    if (empty($opts['output-filename']) && empty($width) && empty($height)) {
+        return 'Cannot resize the image.';
+    }
 
     $create = true;
 
