@@ -25,14 +25,9 @@ class Resizer {
         if ($this->path->isHttpProtocol()):
             $filename = $this->path->obtainFileName();
             $local_filepath = $this->configuration->obtainRemote() . $filename;
-            $download_image = true;
-            if ($this->fileSystem->file_exists($local_filepath)):
-                $opts = $this->configuration->asHash();
-                if ($this->fileSystem->filemtime($local_filepath) < strtotime('+' . $opts['cache_http_minutes'] . ' minutes')):
-                    $download_image = false;
-                endif;
-            endif;
-            if ($download_image == true):
+            $inCache = $this->isInCache($local_filepath);
+
+            if (!$inCache):
                 $img = $this->fileSystem->file_get_contents($imagePath);
                 $this->fileSystem->file_put_contents($local_filepath, $img);
             endif;
@@ -43,15 +38,9 @@ class Resizer {
     }
 
     private function isInCache($filepath) {
-        $inCache = false;
-        if ($this->fileSystem->file_exists($filepath)):
-            $opts = $this->configuration->asHash();
-            if ($this->fileSystem->filemtime($filepath) < strtotime('+' . $opts['cache_http_minutes'] . ' minutes')):
-                $inCache = true;
-            endif;
-        endif;
-
-        return $inCache;
+        $fileExists = $this->fileSystem->file_exists($filepath);
+        $fileValid = $this->fileNotExpired($filepath);
+        return $fileExists && $fileValid;
     }
 
     private function fileNotExpired($filepath) {
