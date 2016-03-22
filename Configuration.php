@@ -6,6 +6,7 @@ class Configuration {
 
     const CACHE_KEY = 'cacheFolder';
     const REMOTE_KEY = 'remoteFolder';
+    const CACHE_MINUTES_KEY = 'cache_http_minutes';
 
     const CONVERT_PATH = 'convert';
 
@@ -43,6 +44,10 @@ class Configuration {
 
     public function obtainConvertPath() {
         return self::CONVERT_PATH;
+    }
+
+    public function obtainCacheMinutes() {
+        return $this->opts[self::CACHE_MINUTES_KEY];
     }
 
     private function sanitize($opts) {
