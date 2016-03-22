@@ -39,12 +39,21 @@ function composeNewPath($imagePath, $configuration) {
 }
 
 function resize($imagePath, $opts = null) {
+
     $path = new ImagePath($imagePath);
     $configuration = new Configuration($opts);
 
     $resizer = new Resizer($path, $configuration);
 
     $opts = $configuration->asHash();
+
+    $width = $configuration->obtainWidth();
+    $height = $configuration->obtainHeight();
+
+    if (empty($opts['output-filename']) && empty($width) && empty($height)) {
+        return 'Cannot resize the image.';
+    }
+
     $imagePath = $path->sanitizedPath();
 
     try {
@@ -53,14 +62,7 @@ function resize($imagePath, $opts = null) {
         return 'image not found';
     }
 
-    $width = $configuration->obtainWidth();
-    $height = $configuration->obtainHeight();
-
     $newPath = composeNewPath($imagePath, $configuration);
-
-    if (empty($opts['output-filename']) && empty($width) && empty($height)) {
-        return 'Cannot resize the image.';
-    }
 
     $create = !isInCache($newPath, $imagePath);
 
