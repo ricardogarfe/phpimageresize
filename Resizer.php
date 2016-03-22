@@ -33,6 +33,13 @@ class Resizer {
             $imagePath = $local_filepath;
         endif;
 
+        if (!file_exists($imagePath)):
+            $imagePath = $_SERVER['DOCUMENT_ROOT'] . $imagePath;
+            if (!file_exists($imagePath)):
+                throw new RuntimeException();
+            endif;
+        endif;
+
         return $imagePath;
     }
 

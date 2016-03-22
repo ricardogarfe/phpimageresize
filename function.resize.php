@@ -12,18 +12,11 @@ function resize($imagePath, $opts = null) {
     $opts = $configuration->asHash();
     $imagePath = $path->sanitizedPath();
 
-    $filePath = $resizer->obtainFilePath();
-
-    if ($filePath != '') {
-        $imagePath = $filePath;
+    try {
+        $imagePath = $resizer->obtainFilePath();
+    } catch (Exception $e) {
+        return 'image not found';
     }
-
-    if (!file_exists($imagePath)):
-        $imagePath = $_SERVER['DOCUMENT_ROOT'] . $imagePath;
-        if (!file_exists($imagePath)):
-            return 'image not found';
-        endif;
-    endif;
 
     if (isset($opts['w'])): $w = $opts['w']; endif;
     if (isset($opts['h'])): $h = $opts['h']; endif;
