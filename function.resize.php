@@ -3,6 +3,20 @@ require 'ImagePath.php';
 require 'Configuration.php';
 require 'Resizer.php';
 
+function isInCache ($newPath, $imagePath) {
+    $isInCache = true;
+    if (file_exists($newPath) == true):
+        $isInCache = false;
+        $origFileTime = date("YmdHis", filemtime($imagePath));
+        $newFileTime = date("YmdHis", filemtime($newPath));
+        if ($newFileTime < $origFileTime): # Not using $opts['expire-time'] ??
+            $isInCache = false;
+        endif;
+    endif;
+
+    return $isInCache;
+}
+
 function resize($imagePath, $opts = null) {
     $path = new ImagePath($imagePath);
     $configuration = new Configuration($opts);
@@ -43,16 +57,7 @@ function resize($imagePath, $opts = null) {
         return 'Cannot resize the image.';
     }
 
-    $create = true;
-
-    if (file_exists($newPath) == true):
-        $create = false;
-        $origFileTime = date("YmdHis", filemtime($imagePath));
-        $newFileTime = date("YmdHis", filemtime($newPath));
-        if ($newFileTime < $origFileTime): # Not using $opts['expire-time'] ??
-            $create = true;
-        endif;
-    endif;
+    $create = !isInCache($newPath, $imagePath);
 
     if ($create == true):
         if (!empty($width) and !empty($height)):
