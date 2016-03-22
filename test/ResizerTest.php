@@ -24,4 +24,19 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
         $this->assertInstanceOf('Resizer', new Resizer(new ImagePath(''), new Configuration()));
         $this->assertInstanceOf('Resizer', new Resizer(new ImagePath('')));
     }
+
+    public function testObtainLocallyCachedFilePath() {
+        $resizer = new Resizer(new ImagePath('http://memesvault.com/wp-content/uploads/Disappointed-Meme-Face-08.png?q=alt'));
+
+        $stub = $this->getMockBuilder('FileSystem')
+            ->getMock();
+
+        $stub->method('file_get_contents')
+            ->willReturn('foo');
+
+        $resizer->injectFileSystem($stub);
+
+        $this->assertEquals('./cache/remote/Disappointed-Meme-Face-08.png', $resizer->obtainFilePath());
+
+    }
 }
