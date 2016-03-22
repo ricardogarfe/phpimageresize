@@ -18,9 +18,9 @@ function resize($imagePath, $opts = null) {
         $imagePath = $filePath;
     }
 
-    if (file_exists($imagePath) == false):
+    if (!file_exists($imagePath)):
         $imagePath = $_SERVER['DOCUMENT_ROOT'] . $imagePath;
-        if (file_exists($imagePath) == false):
+        if (!file_exists($imagePath)):
             return 'image not found';
         endif;
     endif;
