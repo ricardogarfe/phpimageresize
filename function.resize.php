@@ -17,6 +17,27 @@ function isInCache ($newPath, $imagePath) {
     return $isInCache;
 }
 
+function composeNewPath($imagePath, $configuration) {
+    $filename = md5_file($imagePath);
+    $finfo = pathinfo($imagePath);
+    $ext = $finfo['extension'];
+
+    $cropSignal = isset($opts['crop']) && $opts['crop'] == true ? "_cp" : "";
+    $scaleSignal = isset($opts['scale']) && $opts['scale'] == true ? "_sc" : "";
+
+    $widthSignal = !empty($width) ? '_w'.$width : "" ;
+    $heightSignal = !empty($height) ? '_w'.$height : "" ;
+    $extension = '.'.$ext;
+
+    $newPath = $configuration->obtainCache().$filename.$widthSignal.$heightSignal.$cropSignal.$scaleSignal.$extension;
+
+    if ($opts['output-filename']) {
+        $newPath = $opts['output-filename'];
+    }
+
+    return $newPath;
+}
+
 function resize($imagePath, $opts = null) {
     $path = new ImagePath($imagePath);
     $configuration = new Configuration($opts);
@@ -35,23 +56,7 @@ function resize($imagePath, $opts = null) {
     $width = $configuration->obtainWidth();
     $height = $configuration->obtainHeight();
 
-    $filename = md5_file($imagePath);
-
-    $finfo = pathinfo($imagePath);
-    $ext = $finfo['extension'];
-
-    $cropSignal = isset($opts['crop']) && $opts['crop'] == true ? "_cp" : "";
-    $scaleSignal = isset($opts['scale']) && $opts['scale'] == true ? "_sc" : "";
-
-    $widthSignal = !empty($width) ? '_w'.$width : "" ;
-    $heightSignal = !empty($height) ? '_w'.$height : "" ;
-    $extension = '.'.$ext;
-
-    $newPath = $configuration->obtainCache().$filename.$widthSignal.$heightSignal.$cropSignal.$scaleSignal.$extension;
-
-    if ($opts['output-filename']) {
-        $newPath = $opts['output-filename'];
-    }
+    $newPath = composeNewPath($imagePath, $configuration);
 
     if (empty($opts['output-filename']) && empty($width) && empty($height)) {
         return 'Cannot resize the image.';
