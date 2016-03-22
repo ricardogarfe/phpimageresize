@@ -41,6 +41,23 @@ class Resizer {
 
         return $imagePath;
     }
+
+    private function isInCache($filepath) {
+        $inCache = false;
+        if ($this->fileSystem->file_exists($filepath)):
+            $opts = $this->configuration->asHash();
+            if ($this->fileSystem->filemtime($filepath) < strtotime('+' . $opts['cache_http_minutes'] . ' minutes')):
+                $inCache = true;
+            endif;
+        endif;
+
+        return $inCache;
+    }
+
+    private function fileNotExpired($filepath) {
+        $cacheMinutes = $this->configuration->obtainCacheMinutes();
+        return $this->fileSystem->filemtime($filepath) < strtotime('+' . $cacheMinutes . ' minutes');
+    }
     private function checkPath($path) {
         if(!($path instanceof ImagePath))throw new InvalidArgumentException();
     }
