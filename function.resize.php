@@ -18,8 +18,8 @@ function resize($imagePath, $opts = null) {
         return 'image not found';
     }
 
-    $w = $configuration->obtainWidth();
-    $h = $configuration->obtainHeight();
+    $width = $configuration->obtainWidth();
+    $height = $configuration->obtainHeight();
 
     $filename = md5_file($imagePath);
 
@@ -29,12 +29,12 @@ function resize($imagePath, $opts = null) {
     if (false !== $opts['output-filename']) :
         $newPath = $opts['output-filename'];
     else:
-        if (!empty($w) and !empty($h)):
-            $newPath = $configuration->obtainCache() . $filename . '_w' . $w . '_h' . $h . (isset($opts['crop']) && $opts['crop'] == true ? "_cp" : "") . (isset($opts['scale']) && $opts['scale'] == true ? "_sc" : "") . '.' . $ext;
-        elseif (!empty($w)):
-            $newPath = $configuration->obtainCache() . $filename . '_w' . $w . '.' . $ext;
-        elseif (!empty($h)):
-            $newPath = $configuration->obtainCache() . $filename . '_h' . $h . '.' . $ext;
+        if (!empty($width) and !empty($height)):
+            $newPath = $configuration->obtainCache() . $filename . '_w' . $width . '_h' . $height . (isset($opts['crop']) && $opts['crop'] == true ? "_cp" : "") . (isset($opts['scale']) && $opts['scale'] == true ? "_sc" : "") . '.' . $ext;
+        elseif (!empty($width)):
+            $newPath = $configuration->obtainCache() . $filename . '_w' . $width . '.' . $ext;
+        elseif (!empty($height)):
+            $newPath = $configuration->obtainCache() . $filename . '_h' . $height . '.' . $ext;
         else:
             return false;
         endif;
@@ -52,20 +52,20 @@ function resize($imagePath, $opts = null) {
     endif;
 
     if ($create == true):
-        if (!empty($w) and !empty($h)):
+        if (!empty($width) and !empty($height)):
 
             list($width, $height) = getimagesize($imagePath);
-            $resize = $w;
+            $resize = $width;
 
             if ($width > $height):
-                $resize = $w;
+                $resize = $width;
                 if (true === $opts['crop']):
-                    $resize = "x" . $h;
+                    $resize = "x" . $height;
                 endif;
             else:
-                $resize = "x" . $h;
+                $resize = "x" . $height;
                 if (true === $opts['crop']):
-                    $resize = $w;
+                    $resize = $width;
                 endif;
             endif;
 
@@ -74,14 +74,14 @@ function resize($imagePath, $opts = null) {
                     " -quality " . escapeshellarg($opts['quality']) . " " . escapeshellarg($newPath);
             else:
                 $cmd = $configuration->obtainConvertPath() . " " . escapeshellarg($imagePath) . " -resize " . escapeshellarg($resize) .
-                    " -size " . escapeshellarg($w . "x" . $h) .
+                    " -size " . escapeshellarg($width . "x" . $height) .
                     " xc:" . escapeshellarg($opts['canvas-color']) .
                     " +swap -gravity center -composite -quality " . escapeshellarg($opts['quality']) . " " . escapeshellarg($newPath);
             endif;
 
         else:
             $cmd = $configuration->obtainConvertPath() . " " . escapeshellarg($imagePath) .
-                " -thumbnail " . (!empty($h) ? 'x' : '') . $w . "" .
+                " -thumbnail " . (!empty($height) ? 'x' : '') . $width . "" .
                 (isset($opts['maxOnly']) && $opts['maxOnly'] == true ? "\>" : "") .
                 " -quality " . escapeshellarg($opts['quality']) . " " . escapeshellarg($newPath);
         endif;
