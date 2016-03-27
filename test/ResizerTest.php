@@ -27,12 +27,16 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testObtainLocallyCachedFilePath() {
-        $resizer = new Resizer(new ImagePath('http://memesvault.com/wp-content/uploads/Disappointed-Meme-Face-08.png?q=alt'));
+        $configuration = new Configuration(array('width' => 800, 'height' => 600));
+        $imagePath = new ImagePath('http://memesvault.com/wp-content/uploads/Disappointed-Meme-Face-08.png?q=alt');
+        $resizer = new Resizer($imagePath, $configuration);
 
         $stub = $this->getMockBuilder('FileSystem')
             ->getMock();
         $stub->method('file_get_contents')
             ->willReturn('foo');
+        $stub->method('file_exists')
+            ->willReturn(true);
 
         $resizer->injectFileSystem($stub);
 
@@ -41,7 +45,9 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testLocallyCachedFilePathFail() {
-        $resizer = new Resizer(new ImagePath('http://memesvault.com/wp-content/uploads/Disappointed-Meme-Face-08.png?q=alt'));
+        $configuration = new Configuration(array('width' => 800, 'height' => 600));
+        $imagePath = new ImagePath('http://memesvault.com/wp-content/uploads/Disappointed-Meme-Face-08.png?q=alt');
+        $resizer = new Resizer($imagePath, $configuration);
 
         $stub = $this->getMockBuilder('FileSystem')
             ->getMock();
@@ -53,6 +59,11 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
         $resizer->injectFileSystem($stub);
 
         $this->assertEquals('./cache/remote/Disappointed-Meme-Face-08.png', $resizer->obtainFilePath());
+
+    }
+
+    public function testCreateNewPath() {
+        $resizer = new Resizer(new ImagePath('http://memesvault.com/wp-content/uploads/Disappointed-Meme-Face-08.png?q=alt'));
 
     }
 }
