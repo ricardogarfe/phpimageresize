@@ -56,6 +56,25 @@ function isPanoramic($imagePath) {
     return $width > $height;
 }
 
+function composeResizeOptions($imagePath, $configuration) {
+    $opts = $configuration->asHash();
+    $width = $configuration->obtainWidth();
+    $height = $configuration->obtainHeight();
+
+    $resize = "x" . $height;
+    $hasCrop = (true === $opts['crop']);
+
+    if (!$hasCrop && isPanoramic($imagePath)):
+        $resize = $width;
+    endif;
+
+    if ($hasCrop && !isPanoramic($imagePath)):
+        $resize = $width;
+    endif;
+
+    return $resize;
+}
+
 function doResize($imagePath, $newPath, $configuration) {
     $opts = $configuration->asHash();
     $width = $configuration->obtainWidth();
@@ -63,19 +82,7 @@ function doResize($imagePath, $newPath, $configuration) {
 
     if (!empty($width) and !empty($height)):
 
-        $resize = $width;
-
-        if (isPanoramic($imagePath)):
-            $resize = $width;
-            if (true === $opts['crop']):
-                $resize = "x" . $height;
-            endif;
-        else:
-            $resize = "x" . $height;
-            if (true === $opts['crop']):
-                $resize = $width;
-            endif;
-        endif;
+        $resize = composeResizeOptions($imagePath, $configuration);
 
         if (true === $opts['scale']):
             $cmd = $configuration->obtainConvertPath() . " " . escapeshellarg($imagePath) . " -resize " . escapeshellarg($resize) .
