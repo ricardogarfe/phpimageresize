@@ -51,6 +51,11 @@ function defaultShellCommand($configuration, $imagePath, $newPath) {
     return $command;
 }
 
+function isPanoramic($imagePath) {
+    list($width, $height) = getimagesize($imagePath);
+    return $width > $height;
+}
+
 function doResize($imagePath, $newPath, $configuration) {
     $opts = $configuration->asHash();
     $width = $configuration->obtainWidth();
@@ -58,11 +63,9 @@ function doResize($imagePath, $newPath, $configuration) {
 
     if (!empty($width) and !empty($height)):
 
-        list($width, $height) = getimagesize($imagePath);
         $resize = $width;
-        $panoramic = $width > $height;
 
-        if ($panoramic):
+        if (isPanoramic($imagePath)):
             $resize = $width;
             if (true === $opts['crop']):
                 $resize = "x" . $height;
