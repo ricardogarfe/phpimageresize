@@ -60,8 +60,9 @@ function doResize($imagePath, $newPath, $configuration) {
 
         list($width, $height) = getimagesize($imagePath);
         $resize = $width;
+        $panoramic = $width > $height;
 
-        if ($width > $height):
+        if ($panoramic):
             $resize = $width;
             if (true === $opts['crop']):
                 $resize = "x" . $height;
