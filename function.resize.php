@@ -75,6 +75,16 @@ function composeResizeOptions($imagePath, $configuration) {
     return $resize;
 }
 
+function commandWithScale($imagePath, $newPath, $configuration) {
+    $opts = $configuration->asHash();
+    $resize = composeResizeOptions($imagePath, $configuration);
+
+    $command = $configuration->obtainConvertPath() . " " . escapeshellarg($imagePath) . " -resize " . escapeshellarg($resize) .
+    " -quality " . escapeshellarg($opts['quality']) . " " . escapeshellarg($newPath);
+
+    return $command;
+}
+
 function doResize($imagePath, $newPath, $configuration) {
     $opts = $configuration->asHash();
     $width = $configuration->obtainWidth();
@@ -85,8 +95,7 @@ function doResize($imagePath, $newPath, $configuration) {
         $resize = composeResizeOptions($imagePath, $configuration);
 
         if (true === $opts['scale']):
-            $cmd = $configuration->obtainConvertPath() . " " . escapeshellarg($imagePath) . " -resize " . escapeshellarg($resize) .
-                " -quality " . escapeshellarg($opts['quality']) . " " . escapeshellarg($newPath);
+            $cmd = commandWithScale($imagePath, $newPath, $configuration);
         else:
             $cmd = $configuration->obtainConvertPath() . " " . escapeshellarg($imagePath) . " -resize " . escapeshellarg($resize) .
                 " -size " . escapeshellarg($width . "x" . $height) .
