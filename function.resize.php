@@ -38,6 +38,51 @@ function composeNewPath($imagePath, $configuration) {
     return $newPath;
 }
 
+function doResize($imagePath, $newPath, $configuration) {
+    $opts = $configuration->asHash();
+    $width = $configuration->obtainWidth();
+    $height = $configuration->obtainHeight();
+
+    if (!empty($width) and !empty($height)):
+
+        list($width, $height) = getimagesize($imagePath);
+        $resize = $width;
+
+        if ($width > $height):
+            $resize = $width;
+            if (true === $opts['crop']):
+                $resize = "x" . $height;
+            endif;
+        else:
+            $resize = "x" . $height;
+            if (true === $opts['crop']):
+                $resize = $width;
+            endif;
+        endif;
+
+        if (true === $opts['scale']):
+            $cmd = $configuration->obtainConvertPath() . " " . escapeshellarg($imagePath) . " -resize " . escapeshellarg($resize) .
+                " -quality " . escapeshellarg($opts['quality']) . " " . escapeshellarg($newPath);
+        else:
+            $cmd = $configuration->obtainConvertPath() . " " . escapeshellarg($imagePath) . " -resize " . escapeshellarg($resize) .
+                " -size " . escapeshellarg($width . "x" . $height) .
+                " xc:" . escapeshellarg($opts['canvas-color']) .
+                " +swap -gravity center -composite -quality " . escapeshellarg($opts['quality']) . " " . escapeshellarg($newPath);
+        endif;
+
+    else:
+        $cmd = $configuration->obtainConvertPath() . " " . escapeshellarg($imagePath) .
+            " -thumbnail " . (!empty($height) ? 'x' : '') . $width . "" .
+            (isset($opts['maxOnly']) && $opts['maxOnly'] == true ? "\>" : "") .
+            " -quality " . escapeshellarg($opts['quality']) . " " . escapeshellarg($newPath);
+    endif;
+
+    $c = exec($cmd, $output, $return_code);
+    if ($return_code != 0) {
+        error_log("Tried to execute : $cmd, return code: $return_code, output: " . print_r($output, true));
+        throw new RuntimeException();
+    }
+}
 function resize($imagePath, $opts = null) {
 
     $path = new ImagePath($imagePath);
@@ -67,48 +112,15 @@ function resize($imagePath, $opts = null) {
     $create = !isInCache($newPath, $imagePath);
 
     if ($create == true):
-        if (!empty($width) and !empty($height)):
-
-            list($width, $height) = getimagesize($imagePath);
-            $resize = $width;
-
-            if ($width > $height):
-                $resize = $width;
-                if (true === $opts['crop']):
-                    $resize = "x" . $height;
-                endif;
-            else:
-                $resize = "x" . $height;
-                if (true === $opts['crop']):
-                    $resize = $width;
-                endif;
-            endif;
-
-            if (true === $opts['scale']):
-                $cmd = $configuration->obtainConvertPath() . " " . escapeshellarg($imagePath) . " -resize " . escapeshellarg($resize) .
-                    " -quality " . escapeshellarg($opts['quality']) . " " . escapeshellarg($newPath);
-            else:
-                $cmd = $configuration->obtainConvertPath() . " " . escapeshellarg($imagePath) . " -resize " . escapeshellarg($resize) .
-                    " -size " . escapeshellarg($width . "x" . $height) .
-                    " xc:" . escapeshellarg($opts['canvas-color']) .
-                    " +swap -gravity center -composite -quality " . escapeshellarg($opts['quality']) . " " . escapeshellarg($newPath);
-            endif;
-
-        else:
-            $cmd = $configuration->obtainConvertPath() . " " . escapeshellarg($imagePath) .
-                " -thumbnail " . (!empty($height) ? 'x' : '') . $width . "" .
-                (isset($opts['maxOnly']) && $opts['maxOnly'] == true ? "\>" : "") .
-                " -quality " . escapeshellarg($opts['quality']) . " " . escapeshellarg($newPath);
-        endif;
-
-        $c = exec($cmd, $output, $return_code);
-        if ($return_code != 0) {
-            error_log("Tried to execute : $cmd, return code: $return_code, output: " . print_r($output, true));
-            return false;
-        }
+    try {
+        doResize($imagePath, $newPath, $configuration);
+    } catch (Exception $e) {
+        return 'cannot resize the image';
+    }
     endif;
 
-    # return cache file path
-    return str_replace($_SERVER['DOCUMENT_ROOT'], '', $newPath);
+    $cacheFilePath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $newPath);
+
+    return $cacheFilePath;
 
 }
