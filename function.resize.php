@@ -38,6 +38,19 @@ function composeNewPath($imagePath, $configuration) {
     return $newPath;
 }
 
+function defaultShellCommand($configuration, $imagePath, $newPath) {
+    $opts = $configuration->asHash();
+    $width = $configuration->obtainWidth();
+    $height = $configuration->obtainHeight();
+
+    $command = $configuration->obtainConvertPath() . " " . escapeshellarg($imagePath) .
+        " -thumbnail " . (!empty($height) ? 'x' : '') . $width . "" .
+        (isset($opts['maxOnly']) && $opts['maxOnly'] == true ? "\>" : "") .
+        " -quality " . escapeshellarg($opts['quality']) . " " . escapeshellarg($newPath);
+
+    return $command;
+}
+
 function doResize($imagePath, $newPath, $configuration) {
     $opts = $configuration->asHash();
     $width = $configuration->obtainWidth();
@@ -71,10 +84,7 @@ function doResize($imagePath, $newPath, $configuration) {
         endif;
 
     else:
-        $cmd = $configuration->obtainConvertPath() . " " . escapeshellarg($imagePath) .
-            " -thumbnail " . (!empty($height) ? 'x' : '') . $width . "" .
-            (isset($opts['maxOnly']) && $opts['maxOnly'] == true ? "\>" : "") .
-            " -quality " . escapeshellarg($opts['quality']) . " " . escapeshellarg($newPath);
+        $cmd = defaultShellCommand($configuration, $imagePath, $newPath);
     endif;
 
     $c = exec($cmd, $output, $return_code);
@@ -90,17 +100,12 @@ function resize($imagePath, $opts = null) {
 
     $resizer = new Resizer($path, $configuration);
 
-    $opts = $configuration->asHash();
-
-    $width = $configuration->obtainWidth();
-    $height = $configuration->obtainHeight();
-
-    if (empty($opts['output-filename']) && empty($width) && empty($height)) {
+    // This has to go o Configuration as Exception in initialization
+    if (empty($configuration->asHash()['output-filename']) && empty($width) && empty($height)) {
         return 'Cannot resize the image.';
     }
 
-    $imagePath = $path->sanitizedPath();
-
+    // This has to be done in resizer resize
     try {
         $imagePath = $resizer->obtainFilePath();
     } catch (Exception $e) {
@@ -112,13 +117,14 @@ function resize($imagePath, $opts = null) {
     $create = !isInCache($newPath, $imagePath);
 
     if ($create == true):
-    try {
-        doResize($imagePath, $newPath, $configuration);
-    } catch (Exception $e) {
-        return 'cannot resize the image';
-    }
+        try {
+            doResize($imagePath, $newPath, $configuration);
+        } catch (Exception $e) {
+            return 'cannot resize the image';
+        }
     endif;
 
+    // The new path must be the returned value of resizer resize
     $cacheFilePath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $newPath);
 
     return $cacheFilePath;
