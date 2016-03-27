@@ -85,7 +85,7 @@ function commandWithScale($imagePath, $newPath, $configuration) {
     return $command;
 }
 
-function commandWithOutScale($imagePath, $newPath, $configuration) {
+function commandWithCrop($imagePath, $newPath, $configuration) {
     $opts = $configuration->asHash();
     $width = $configuration->obtainWidth();
     $height = $configuration->obtainHeight();
@@ -108,7 +108,7 @@ function doResize($imagePath, $newPath, $configuration) {
         if (true === $opts['scale']):
             $cmd = commandWithScale($imagePath, $newPath, $configuration);
         else:
-            $cmd = commandWithOutScale($imagePath, $newPath, $configuration);
+            $cmd = commandWithCrop($imagePath, $newPath, $configuration);
         endif;
 
     else:
