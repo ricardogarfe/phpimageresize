@@ -85,6 +85,19 @@ function commandWithScale($imagePath, $newPath, $configuration) {
     return $command;
 }
 
+function commandWithOutScale($imagePath, $newPath, $configuration) {
+    $opts = $configuration->asHash();
+    $width = $configuration->obtainWidth();
+    $height = $configuration->obtainHeight();
+    $resize = composeResizeOptions($imagePath, $configuration);
+
+    $command = $configuration->obtainConvertPath() . " " . escapeshellarg($imagePath) . " -resize " . escapeshellarg($resize) .
+        " -size " . escapeshellarg($width . "x" . $height) .
+        " xc:" . escapeshellarg($opts['canvas-color']) .
+        " +swap -gravity center -composite -quality " . escapeshellarg($opts['quality']) . " " . escapeshellarg($newPath);
+
+    return $command;
+}
 function doResize($imagePath, $newPath, $configuration) {
     $opts = $configuration->asHash();
     $width = $configuration->obtainWidth();
@@ -97,10 +110,7 @@ function doResize($imagePath, $newPath, $configuration) {
         if (true === $opts['scale']):
             $cmd = commandWithScale($imagePath, $newPath, $configuration);
         else:
-            $cmd = $configuration->obtainConvertPath() . " " . escapeshellarg($imagePath) . " -resize " . escapeshellarg($resize) .
-                " -size " . escapeshellarg($width . "x" . $height) .
-                " xc:" . escapeshellarg($opts['canvas-color']) .
-                " +swap -gravity center -composite -quality " . escapeshellarg($opts['quality']) . " " . escapeshellarg($newPath);
+            $cmd = commandWithOutScale($imagePath, $newPath, $configuration);
         endif;
 
     else:
