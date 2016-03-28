@@ -18,6 +18,9 @@ function isInCache ($newPath, $imagePath) {
 }
 
 function composeNewPath($imagePath, $configuration) {
+    $opts = $configuration->asHash();
+    $width = $configuration->obtainWidth();
+    $height = $configuration->obtainHeight();
     $filename = md5_file($imagePath);
     $finfo = pathinfo($imagePath);
     $ext = $finfo['extension'];
@@ -119,10 +122,10 @@ function doResize($imagePath, $newPath, $configuration) {
         throw new RuntimeException();
     }
 }
-function resize($imagePath, $opts = null)
+function resize($originalImage, $opts = null)
 {
 
-    $path = new ImagePath($imagePath);
+    $path = new ImagePath($originalImage);
     try {
         $configuration = new Configuration($opts);
     } catch (Exception $e) {
@@ -133,18 +136,18 @@ function resize($imagePath, $opts = null)
 
     // This has to be done in resizer resize
     try {
-        $imagePath = $resizer->obtainFilePath();
+        $originalImage = $resizer->obtainFilePath();
     } catch (Exception $e) {
         return 'image not found';
     }
 
-    $newPath = composeNewPath($imagePath, $configuration);
+    $newPath = composeNewPath($originalImage, $configuration);
 
-    $create = !isInCache($newPath, $imagePath);
+    $create = !isInCache($newPath, $originalImage);
 
     if ($create == true):
         try {
-            doResize($imagePath, $newPath, $configuration);
+            doResize($originalImage, $newPath, $configuration);
         } catch (Exception $e) {
             return 'cannot resize the image';
         }
