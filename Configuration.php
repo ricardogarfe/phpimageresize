@@ -8,8 +8,8 @@ class Configuration {
     const REMOTE_KEY = 'remoteFolder';
     const CACHE_MINUTES_KEY = 'cache_http_minutes';
 
-    const WIDTH_KEY = 'w';
-    const HEIGHT_KEY = 'h';
+    const WIDTH_KEY = 'width';
+    const HEIGHT_KEY = 'height';
 
     const CONVERT_PATH = 'convert';
 
@@ -24,13 +24,21 @@ class Configuration {
             'thumbnail' => false,
             'maxOnly' => false,
             'canvas-color' => 'transparent',
-            'output-filename' => false,
+            'output-filename' => 'default-output-filename',
             self::CACHE_KEY => self::CACHE_PATH,
             self::REMOTE_KEY => self::REMOTE_PATH,
             'quality' => 90,
             'cache_http_minutes' => 20,
-            'w' => null,
-            'h' => null);
+            'width' => null,
+            'height' => null);
+
+        if (empty($opts)) {
+            $opts = $defaults;
+        }
+
+        if (empty($opts['output-filename']) && empty($opts['width']) && empty($opts['height'])) {
+            throw new InvalidArgumentException();
+        }
 
         $this->opts = array_merge($defaults, $sanitized);
     }

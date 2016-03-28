@@ -10,12 +10,13 @@ class FunctionResizeTest extends PHPUnit_Framework_TestCase {
         'thumbnail' => false,
         'maxOnly' => false,
         'canvas-color' => 'transparent',
-        'output-filename' => false,
+        'output-filename' => 'default-output-filename',
         'cacheFolder' => './cache/',
         'remoteFolder' => './cache/remote/',
         'quality' => 90,
-        'cache_http_minutes' => 20
-    );
+        'cache_http_minutes' => 20,
+        'width' => null,
+        'height' => null);
 
     public function testConfiguration() {
         $this->assertInstanceOf('Configuration', new Configuration);
@@ -38,7 +39,10 @@ class FunctionResizeTest extends PHPUnit_Framework_TestCase {
 
         $opts = array(
             'thumbnail' => true,
-            'maxOnly' => true
+            'maxOnly' => true,
+            'output-filename' => 'default-output-filename',
+            'width' => null,
+            'height' => null
         );
 
         $options = new Configuration($opts);
